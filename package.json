@@ -2,14 +2,13 @@
   "name": "loc-images-bot",
   "version": "1.0.0",
   "description": "Library of Congress-powered image bot",
-  "main": "index.js",
+  "main": "bot.js",
   "scripts": {
-    "start": "claudia create --region us-east-1 --deploy-proxy-api --handler main.handler",
+    "start": "claudia create --region us-east-1 --api-module bot",
     "destroy": "claudia destroy",
     "update": "claudia update",
     "test": "claudia test-lambda --event event.json",
-    "test-scrap": "node lib/news.js",
-    "dirty-start": "claudia create --region us-east-1 --api-module bot",
+    "test-scrap": "node lib/search.js",
     "configure-telegram": "claudia update --configure-telegram-bot"
   },
   "author": "lexieheinle",
@@ -18,6 +17,7 @@
     "claudia-bot-builder": "^2.15.0"
   },
   "devDependencies": {
-    "claudia": "^2.14.1"
+    "claudia": "^2.14.1",
+    "minimal-request-promise": "^1.4.0"
   }
 }
