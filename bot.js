@@ -23,7 +23,7 @@ module.exports = botBuilder((message, orginalApiRequest) => {
         new telegramTemplate.ChatAction('typing').get(),
         new telegramTemplate.Text(`Tell me what you want to search for by replying with Search this thing`).get(),
         new telegramTemplate.ChatAction('typing').get(),
-        new telegramTemplate.Text(`For example: Search puppies`).get()
+        new telegramTemplate.Text(`For example: Send puppies`).get()
       ];
     if (message.text.indexOf('Search') === 0){
       const clean_message = message.text.slice(7);
@@ -32,13 +32,23 @@ module.exports = botBuilder((message, orginalApiRequest) => {
           return [
             new telegramTemplate.Text(`Finding ${clean_message}`).get(),
             new telegramTemplate.ChatAction('typing').get(),
-            new telegramTemplate.Text(`${photo.title}`).get(),
-            new telegramTemplate.Pause(400).get(),
+            new telegramTemplate.Pause(100).get(),
             new telegramTemplate.ChatAction('upload_photo').get(),
             new telegramTemplate.Photo(`http:${photo.thumbnail}`).get(),
             new telegramTemplate.Text(`Get more info from the Library of Congress: http:${photo.link}`).get()
           ];
         })
+      }
+      if (message.text.indexOf('Send') === 0){
+        const clean_message = message.text.slice(5);
+        return database.addUser(user.id, clean_message)
+          .then(response => {
+            return [
+              new telegramTemplate.ChatAction('typing').get(),
+              new telegramTemplate.Pause(100).get(),
+              new telegramTemplate.Text(`Awesome, ${user.name}! You'll get a daily photo sent of ${clean_message}.`).get(),
+            ]
+          })
       }
   }
 

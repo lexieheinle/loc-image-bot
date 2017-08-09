@@ -9,11 +9,13 @@
     "update": "claudia update",
     "test": "claudia test-lambda --event event.json",
     "test-scrap": "node lib/search.js",
-    "configure-telegram": "claudia update --configure-telegram-bot"
+    "configure-telegram": "claudia update --configure-telegram-bot",
+    "test-database": "node lib/database.js"
   },
   "author": "lexieheinle",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.95.0",
     "claudia-bot-builder": "^2.15.0"
   },
   "devDependencies": {
