@@ -2,6 +2,7 @@ const rp = require('minimal-request-promise');
 const botBuilder = require('claudia-bot-builder');
 const telegramTemplate = botBuilder.telegramTemplate;
 const search = require('./lib/search.js');
+const database = require('./lib/database.js');
 
 module.exports = botBuilder((message, orginalApiRequest) => {
   console.log('heres the message');
@@ -41,13 +42,21 @@ module.exports = botBuilder((message, orginalApiRequest) => {
       }
       if (message.text.indexOf('Send') === 0){
         const clean_message = message.text.slice(5);
-        return database.addUser(user.id, clean_message)
+        return database.addUser(user.id.toString(), clean_message)
           .then(response => {
-            return [
-              new telegramTemplate.ChatAction('typing').get(),
-              new telegramTemplate.Pause(100).get(),
-              new telegramTemplate.Text(`Awesome, ${user.name}! You'll get a daily photo sent of ${clean_message}.`).get(),
-            ]
+            if(response) {
+              return [
+                new telegramTemplate.ChatAction('typing').get(),
+                new telegramTemplate.Pause(100).get(),
+                new telegramTemplate.Text(`Awesome, ${user.name}! You'll get a daily photo sent of ${clean_message}.`).get(),
+              ]
+            } else {
+              return [
+                new telegramTemplate.ChatAction('typing').get(),
+                new telegramTemplate.Pause(100).get(),
+                new telegramTemplate.Text(`Opps, sorry ${user.name}; something bad happened.`).get(),
+              ]
+            }
           })
       }
   }
