@@ -4,9 +4,9 @@
   "description": "Library of Congress-powered image bot",
   "main": "bot.js",
   "scripts": {
-    "start": "claudia create --region us-east-1 --api-module bot",
+    "start": "claudia create --region us-east-1 --api-module bot --no-optional-dependencies",
     "destroy": "claudia destroy",
-    "update": "claudia update",
+    "update": "claudia update --no-optional-dependencies",
     "test": "claudia test-lambda --event event.json",
     "test-scrap": "node lib/search.js",
     "configure-telegram": "claudia update --configure-telegram-bot",
@@ -15,11 +15,13 @@
   "author": "lexieheinle",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.95.0",
     "claudia-bot-builder": "^2.15.0"
   },
   "devDependencies": {
     "claudia": "^2.14.1",
     "minimal-request-promise": "^1.4.0"
+  },
+  "optionalDependencies": {
+    "aws-sdk": "^2.96.0"
   }
 }
