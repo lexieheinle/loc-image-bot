@@ -9,8 +9,8 @@ module.exports = botBuilder((message, orginalApiRequest) => {
   console.log(message);
   console.log('heres the orginal api request');
   console.log(orginalApiRequest);
-  const user = {'id': message.originalRequest.message.from.id, 'name': message.originalRequest.message.from.first_name};
   if (message.type === 'telegram'){
+      const user = {'id': message.originalRequest.message.from.id, 'name': message.originalRequest.message.from.first_name};
     if (message.text === '/start')
       return [
         new telegramTemplate.Text(`Hi ${user.name} with ${user.id}.`).get(),
@@ -30,6 +30,7 @@ module.exports = botBuilder((message, orginalApiRequest) => {
       const clean_message = message.text.slice(7);
       return search.getSearch(clean_message)
         .then(photo => {
+          if (photo) {
           return [
             new telegramTemplate.Text(`Finding ${clean_message}`).get(),
             new telegramTemplate.ChatAction('typing').get(),
@@ -38,6 +39,14 @@ module.exports = botBuilder((message, orginalApiRequest) => {
             new telegramTemplate.Photo(`http:${photo.thumbnail}`).get(),
             new telegramTemplate.Text(`Get more info from the Library of Congress: http:${photo.link}`).get()
           ];
+        } else {
+          return [
+            new telegramTemplate.Text(`Finding ${clean_message}`).get(),
+            new telegramTemplate.ChatAction('typing').get(),
+            new telegramTemplate.Pause(100).get(),
+            new telegramTemplate.Text(`Sorry! I wasn't able to find a photo matching "${clean_message}". Please try a different search term.`).get()
+          ];
+        }
         })
       }
       if (message.text.indexOf('Send') === 0){
