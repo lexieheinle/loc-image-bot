@@ -3,7 +3,7 @@ const botBuilder = require('claudia-bot-builder');
 const telegramTemplate = botBuilder.telegramTemplate;
 const search = require('./lib/search.js');
 const database = require('./lib/database.js');
-
+const telegramSend = require('claudia-bot-builder/lib/telegram/reply');
 module.exports = botBuilder((message, orginalApiRequest) => {
   console.log('heres the message');
   console.log(message);
@@ -71,3 +71,42 @@ module.exports = botBuilder((message, orginalApiRequest) => {
   }
 
 });
+module.exports.get('/send', function(request) {
+  console.log('request is ');
+  console.log(request);
+  const clean_message = request.queryString.search_term;
+  const article_info = {'link': request.queryString.article_link};
+  let inital_array = [
+    new telegramTemplate.Text(`${article_info.link}`).get()
+  ]
+  return telegramSend({sender: request.queryString.chat_id, originalRequest: {}},inital_array,request.env.telegramAccessToken)
+  .then(response => {
+    return search.getSearch(clean_message)
+      .then(photo => {
+        let result_array = [
+          new telegramTemplate.Text(`Finding ${clean_message}`).get(),
+          new telegramTemplate.Text(`Sorry! I wasn't able to find a photo matching "${clean_message}". Please try a different search term for your daily photo by typing: Send {photo_search_term}.`).get()
+        ];
+        if (photo) {
+        result_array =  [
+          new telegramTemplate.Text(`Sending ${clean_message}`).get(),
+          new telegramTemplate.Photo(`http:${photo.thumbnail}`).get(),
+          new telegramTemplate.Text(`Get more info from the Library of Congress: http:${photo.link}`).get()
+        ];
+      }
+      return telegramSend({sender: request.queryString.chat_id, originalRequest: {}},result_array,request.env.telegramAccessToken)
+      .then(response => {
+        return true
+      })
+      .catch(error => {
+        console.log(error);
+        return false;
+      })
+      })
+  })
+  .catch(error => {
+    console.log(error);
+    return false;
+  })
+
+})

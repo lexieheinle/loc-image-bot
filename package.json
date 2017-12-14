@@ -10,16 +10,18 @@
     "test": "claudia test-lambda --event event.json",
     "test-scrap": "node lib/search.js",
     "configure-telegram": "claudia update --configure-telegram-bot",
-    "test-database": "node lib/database.js"
+    "test-database": "node lib/database.js",
+    "test-send-message": "node bot.js",
+    "test-popular": "node lib/popular.js"
   },
   "author": "lexieheinle",
   "license": "ISC",
   "dependencies": {
-    "claudia-bot-builder": "^2.15.0"
+    "claudia-bot-builder": "^2.15.0",
+    "minimal-request-promise": "^1.4.0"
   },
   "devDependencies": {
-    "claudia": "^2.14.1",
-    "minimal-request-promise": "^1.4.0"
+    "claudia": "^2.14.1"
   },
   "optionalDependencies": {
     "aws-sdk": "^2.96.0"
