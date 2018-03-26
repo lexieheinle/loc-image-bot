@@ -1,0 +1,1 @@
+# loc-image-bot
